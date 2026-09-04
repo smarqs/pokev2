@@ -1,20 +1,79 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title>Pokédex</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">Pokédex</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <main class="page-content">
+    <section class="page-heading" aria-labelledby="page-title">
+      <p class="eyebrow">Pokedex</p>
+      <h1 id="page-title">Lista de Pokémons</h1>
+      <p class="subtitle">Página {{ currentPage }} de {{ totalPages }}</p>
+    </section>
+
+    <ion-progress-bar
+      *ngIf="isLoading"
+      type="indeterminate"
+      aria-label="Carregando Pokémon"
+    ></ion-progress-bar>
+
+    <ion-card *ngIf="errorMessage" class="state-card" color="light">
+      <ion-card-content>
+        <ion-text color="danger">
+          <p>{{ errorMessage }}</p>
+        </ion-text>
+        <ion-button fill="outline" (click)="retry()">Tentar novamente</ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <section
+      *ngIf="!errorMessage && pokemon.length > 0"
+      class="pokemon-grid"
+      aria-label="Lista de Pokémon"
+    >
+      <ion-card
+        *ngFor="let item of pokemon; trackBy: trackByName"
+        class="pokemon-card"
+      >
+        <img
+          [src]="getPokemonImage(item.url)"
+          [alt]="'Imagem do Pokémon ' + item.name"
+          loading="lazy"
+        />
+        <ion-card-header>
+          <ion-card-subtitle>#{{ getPokemonId(item.url) | number: '3.0-0' }}</ion-card-subtitle>
+          <ion-card-title>{{ item.name | titlecase }}</ion-card-title>
+        </ion-card-header>
+      </ion-card>
+    </section>
+
+    <ion-card *ngIf="!isLoading && !errorMessage && pokemon.length === 0" class="state-card">
+      <ion-card-content>Nenhum Pokémon encontrado.</ion-card-content>
+    </ion-card>
+
+    <nav class="pagination" aria-label="Paginação da lista de Pokémon">
+      <ion-button
+        fill="outline"
+        [disabled]="!canGoToPreviousPage"
+        (click)="goToPreviousPage()"
+      >
+        Anterior
+      </ion-button>
+      <span aria-live="polite">{{ currentPage }} / {{ totalPages }}</span>
+      <ion-button
+        fill="solid"
+        [disabled]="!canGoToNextPage"
+        (click)="goToNextPage()"
+      >
+        Próxima
+      </ion-button>
+    </nav>
+  </main>
 </ion-content>
