@@ -1,7 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
 
 import { PokemonListItem } from '../core/models/pokemon.model';
+import { FavoritesService } from '../core/services/favorites.service';
 import { PokeApiService } from '../core/services/pokeApi.service';
 
 @Component({
@@ -18,14 +19,18 @@ export class HomePage implements OnInit {
   totalCount = 0;
   isLoading = false;
   errorMessage = '';
+  favoriteNames = new Set<string>();
 
-  constructor(
-    private readonly pokeApiService: PokeApiService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly ngZone: NgZone
-  ) { }
+  private readonly pokeApiService = inject(PokeApiService);
+  private readonly favoritesService = inject(FavoritesService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly ngZone = inject(NgZone);
+
 
   ngOnInit(): void {
+    this.favoriteNames = new Set(
+      this.favoritesService.getFavorites().map(({ name }) => name),
+    );
     this.loadPage();
   }
 
@@ -94,6 +99,22 @@ export class HomePage implements OnInit {
 
   retry(): void {
     this.loadPage();
+  }
+
+  isFavorite(pokemon: PokemonListItem): boolean {
+    return this.favoriteNames.has(pokemon.name);
+  }
+
+  toggleFavorite(pokemon: PokemonListItem): void {
+    const isNowFavorite = this.favoritesService.toggleFavorite(pokemon);
+
+    if (isNowFavorite) {
+      this.favoriteNames.add(pokemon.name);
+    } else {
+      this.favoriteNames.delete(pokemon.name);
+    }
+
+    this.cdr.detectChanges();
   }
 
   getPokemonId(url: string): number {

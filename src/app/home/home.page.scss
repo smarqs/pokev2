@@ -65,8 +65,24 @@ ion-progress-bar {
   margin-bottom: 4px;
 }
 
+.card-heading {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  justify-content: space-between;
+}
+
 .pokemon-card ion-card-title {
+  flex: 1;
   font-size: 1rem;
+}
+
+.card-heading ion-button {
+  --padding-end: 0;
+  --padding-start: 0;
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  margin: 0;
 }
 
 .state-card {
