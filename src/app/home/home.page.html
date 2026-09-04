@@ -42,7 +42,11 @@
         aria-label="Lista de Pokémon"
       >
         @for (item of pokemon; track item.name) {
-          <ion-card class="pokemon-card">
+          <ion-card
+            class="pokemon-card"
+            button
+            (click)="openDetails(item)"
+          >
             <img
               [src]="getPokemonImage(item.url)"
               [alt]="'Imagem do Pokémon ' + item.name"
@@ -58,9 +62,9 @@
                   [color]="isFavorite(item) ? 'warning' : 'medium'"
                   [attr.aria-label]="(isFavorite(item) ? 'Remover ' : 'Adicionar ') + item.name + ' dos favoritos'"
                   [attr.aria-pressed]="isFavorite(item)"
-                  (click)="toggleFavorite(item)"
+                  (click)="onFavoriteClick($event, item)"
                 >
-                  {{ isFavorite(item) ? 'Favorito' : 'Favoritar' }} <!--Colocar algum item aqui-->
+                  {{ isFavorite(item) ? 'Favorito' : 'Favoritar' }}
                 </ion-button>
               </div>
             </ion-card-header>

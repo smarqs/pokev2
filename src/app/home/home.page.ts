@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, inject, NgZone, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { PokemonListItem } from '../core/models/pokemon.model';
@@ -23,6 +24,7 @@ export class HomePage implements OnInit {
 
   private readonly pokeApiService = inject(PokeApiService);
   private readonly favoritesService = inject(FavoritesService);
+  private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly ngZone = inject(NgZone);
 
@@ -56,18 +58,19 @@ export class HomePage implements OnInit {
 
     this.pokeApiService
       .getPokemonPage(page, this.pageSize)
-      .pipe(
+            .pipe(
         finalize(() => {
+          // Garante que o estado final do loading rode na Zona do Angular
           this.ngZone.run(() => {
             this.isLoading = false;
-            this.cdr.detectChanges();
+            this.cdr.detectChanges(); // Força a atualização da interface
           });
         })
       )
 
       .subscribe({
         next: (response) => {
-          this.ngZone.run(() => {
+                    this.ngZone.run(() => {
             this.pokemon = response.results;
             this.currentPage = page;
             this.totalCount = response.count;
@@ -78,7 +81,7 @@ export class HomePage implements OnInit {
         error: (err) => {
           this.ngZone.run(() => {
             console.error('Erro na requisição:', err);
-            this.errorMessage = 'Não foi possível carregar os Pokémon. Tente novamente.';
+            this.errorMessage =              'Não foi possível carregar os Pokémon. Tente novamente.';
             this.cdr.detectChanges();
           });
         },
@@ -99,6 +102,15 @@ export class HomePage implements OnInit {
 
   retry(): void {
     this.loadPage();
+  }
+
+  openDetails(pokemon: PokemonListItem): void {
+    this.router.navigate(['/pokemon', pokemon.name]);
+  }
+
+  onFavoriteClick(event: Event, pokemon: PokemonListItem): void {
+    event.stopPropagation();
+    this.toggleFavorite(pokemon);
   }
 
   isFavorite(pokemon: PokemonListItem): boolean {

@@ -1,0 +1,123 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="Voltar"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalhes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <main class="details-content">
+    @if (isLoading) {
+      <div class="loading-state">
+        <ion-spinner name="crescent" aria-label="Carregando detalhes"></ion-spinner>
+        <p>Carregando detalhes...</p>
+      </div>
+    }
+
+    @if (errorMessage) {
+      <ion-card class="state-card" color="light">
+        <ion-card-content>
+          <ion-text color="danger">
+            <p>{{ errorMessage }}</p>
+          </ion-text>
+          <ion-button fill="outline" (click)="retry()">Tentar novamente</ion-button>
+        </ion-card-content>
+      </ion-card>
+    }
+
+    @if (pokemon) {
+      <section class="pokemon-hero" aria-labelledby="pokemon-name">
+        <div class="pokemon-image-wrapper">
+          <img
+            [src]="getPokemonImage()"
+            [alt]="'Imagem do Pokémon ' + pokemon.name"
+          />
+        </div>
+        <div class="pokemon-heading">
+          <p class="pokemon-number">#{{ pokemon.id | number: '3.0-0' }}</p>
+          <h1 id="pokemon-name">{{ pokemon.name | titlecase }}</h1>
+          <ion-button
+            fill="outline"
+            [color]="isFavorite() ? 'warning' : 'primary'"
+            [attr.aria-pressed]="isFavorite()"
+            (click)="toggleFavorite()"
+          >
+            {{ isFavorite() ? 'Remover dos favoritos' : 'Adicionar aos favoritos' }}
+          </ion-button>
+        </div>
+      </section>
+
+      <section class="info-grid" aria-label="Informações principais">
+        <ion-card class="info-card">
+          <ion-card-header>
+            <ion-card-subtitle>Altura</ion-card-subtitle>
+            <ion-card-title>{{ formatHeight(pokemon.height) }}</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+        <ion-card class="info-card">
+          <ion-card-header>
+            <ion-card-subtitle>Peso</ion-card-subtitle>
+            <ion-card-title>{{ formatWeight(pokemon.weight) }}</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+        <ion-card class="info-card">
+          <ion-card-header>
+            <ion-card-subtitle>Experiência base</ion-card-subtitle>
+            <ion-card-title>{{ pokemon.base_experience ?? '—' }}</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </section>
+
+      <ion-card class="detail-card">
+        <ion-card-header>
+          <ion-card-title>Tipos</ion-card-title>
+        </ion-card-header>
+        <ion-card-content class="chip-list">
+          @for (typeSlot of pokemon.types; track typeSlot.type.name) {
+            <ion-chip color="primary">
+              <ion-label>{{ typeSlot.type.name | titlecase }}</ion-label>
+            </ion-chip>
+          }
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="detail-card">
+        <ion-card-header>
+          <ion-card-title>Habilidades</ion-card-title>
+        </ion-card-header>
+        <ion-card-content class="ability-list">
+          @for (abilitySlot of pokemon.abilities; track abilitySlot.ability.name) {
+            <div class="ability-item">
+              <span>{{ abilitySlot.ability.name | titlecase }}</span>
+              @if (abilitySlot.is_hidden) {
+                <ion-badge color="medium">Oculta</ion-badge>
+              }
+            </div>
+          }
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="detail-card">
+        <ion-card-header>
+          <ion-card-title>Estatísticas</ion-card-title>
+        </ion-card-header>
+        <ion-card-content class="stats-list">
+          @for (stat of pokemon.stats; track stat.stat.name) {
+            <div class="stat-item">
+              <div class="stat-label">
+                <span>{{ stat.stat.name | titlecase }}</span>
+                <strong>{{ stat.base_stat }}</strong>
+              </div>
+              <ion-progress-bar
+                [value]="getStatPercentage(stat.base_stat) / 100"
+                [attr.aria-label]="stat.stat.name + ': ' + stat.base_stat"
+              ></ion-progress-bar>
+            </div>
+          }
+        </ion-card-content>
+      </ion-card>
+    }
+  </main>
+</ion-content>

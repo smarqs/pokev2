@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -13,8 +13,7 @@ import {
 })
 export class PokeApiService {
   private readonly apiUrl = environment.pokeApiUrl;
-
-  constructor(private readonly http: HttpClient) {}
+  private readonly http = inject(HttpClient);
 
   getPokemonPage(page: number, limit: number): Observable<PokemonListResponse> {
     const params = new HttpParams()

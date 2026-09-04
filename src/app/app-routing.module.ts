@@ -7,6 +7,11 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
   },
   {
+    path: 'pokemon/:name',
+    loadChildren: () =>
+      import('./detalhes/detalhes.module').then((module) => module.DetalhesPageModule),
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
