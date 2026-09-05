@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, timeout } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import {
@@ -16,13 +16,15 @@ import { map } from 'rxjs/operators';
 export class PokeApiService {
   private readonly apiUrl = environment.pokeApiUrl;
   private readonly http = inject(HttpClient);
-
+  private readonly requestTimeoutMs = 10000;
+  
   getPokemonPage(page: number, limit: number): Observable<PokemonListResponse> {
     const params = new HttpParams()
       .set('offset', this.getOffset(page, limit))
       .set('limit', limit);
 
     return this.http.get<PokemonListResponse>(`${this.apiUrl}/pokemon`, { params }).pipe(
+      timeout({ each: this.requestTimeoutMs }),
       map((response) => ({
         ...response,
         results: response.results.map((item) => ({
@@ -73,7 +75,7 @@ export class PokeApiService {
   getPokemonDetails(identifier: string | number): Observable<PokemonDetails> {
     return this.http.get<PokemonDetails>(
       `${this.apiUrl}/pokemon/${encodeURIComponent(identifier)}`,
-    );
+    ).pipe(timeout({ each: this.requestTimeoutMs }));
   }
 
   private getOffset(page: number, limit: number): number {

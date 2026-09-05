@@ -6,6 +6,8 @@ import { PokemonDetails } from '../core/models/pokemon.model';
 import { FavoritesService } from '../core/services/favorites.service';
 import { PokeApiService } from '../core/services/pokeApi.service';
 
+import { getDetalhesImage } from '../core/utils/pokemon.utils';
+
 @Component({
   selector: 'app-detalhes',
   templateUrl: './detalhes.page.html',
@@ -23,8 +25,10 @@ export class DetalhesPage implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly ngZone = inject(NgZone);
 
+  readonly getPokemonImage = () => getDetalhesImage(this.pokemon);
+
   ngOnInit(): void {
-  const pokemonId = this.activatedRoute.snapshot.paramMap.get('id');
+    const pokemonId = this.activatedRoute.snapshot.paramMap.get('id');
 
     if (!pokemonId) {
       this.errorMessage = 'Pokémon não encontrado.';
@@ -83,14 +87,6 @@ export class DetalhesPage implements OnInit {
       url: `https://pokeapi.co/api/v2/pokemon/${this.pokemon.id}/`,
     });
     this.cdr.detectChanges();
-  }
-
-  getPokemonImage(): string {
-    return (
-      this.pokemon?.sprites.other?.['official-artwork']?.front_default ??
-      this.pokemon?.sprites.front_default ??
-      ''
-    );
   }
 
   formatHeight(height: number): string {

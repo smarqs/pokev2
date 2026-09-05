@@ -6,6 +6,9 @@ import { PokemonListItem } from '../core/models/pokemon.model';
 import { FavoritesService } from '../core/services/favorites.service';
 import { PokeApiService } from '../core/services/pokeApi.service';
 
+import { getPokemonImage as getPokemonImageFromUrl } from '../core/utils/pokemon.utils';
+
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -28,6 +31,7 @@ export class HomePage {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly ngZone = inject(NgZone);
 
+  readonly getPokemonImage = getPokemonImageFromUrl;
 
   ionViewWillEnter(): void {
     this.favoriteIds = new Set(
@@ -103,6 +107,14 @@ export class HomePage {
     this.loadPage();
   }
 
+  get showEmptyState(): boolean {
+    return !this.isLoading && !this.errorMessage && this.pokemon.length === 0;
+  }
+
+  get showPagination(): boolean {
+    return !this.isLoading && !this.errorMessage && this.pokemon.length > 0;
+  }
+
   openDetails(pokemon: PokemonListItem): void {
     this.router.navigate(['/pokemon', pokemon.id]);
   }
@@ -126,11 +138,6 @@ export class HomePage {
     }
 
     this.cdr.detectChanges();
-  }
-
-  getPokemonImage(pokemonId: number): string {
-    //console.log("ID:", pokemonId);
-    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png`;
   }
 
   trackById(_: number, pokemon: PokemonListItem): number {

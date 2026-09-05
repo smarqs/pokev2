@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { PokemonListItem } from '../core/models/pokemon.model';
 import { FavoritesService } from '../core/services/favorites.service';
 
+import { getPokemonImage as getPokemonImageFromUrl } from '../core/utils/pokemon.utils';
+
 @Component({
   selector: 'app-favoritos',
   templateUrl: './favoritos.page.html',
@@ -15,6 +17,8 @@ export class FavoritosPage {
 
   private readonly favoritesService = inject(FavoritesService);
   private readonly router = inject(Router);
+
+  readonly getPokemonImage = getPokemonImageFromUrl;
 
   ngOnInit(): void {
     this.favorites = this.favoritesService.getFavorites();
@@ -31,10 +35,5 @@ export class FavoritosPage {
     this.favorites = this.favorites.filter(
       ({ id }) => id !== pokemon.id,
     );
-  }
-
-  getPokemonImage(pokemonId: number): string {
-    //console.log("ID:", pokemonId);
-    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png`;
   }
 }

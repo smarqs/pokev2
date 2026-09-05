@@ -58,12 +58,13 @@
     </section>
     }
 
-    @if (!isLoading && !errorMessage && pokemon.length === 0) {
+    @if (showEmptyState) {
     <ion-card class="state-card">
       <ion-card-content>Nenhum Pokémon encontrado.</ion-card-content>
     </ion-card>
     }
 
+    @if (showPagination) {
     <nav class="pagination" aria-label="Paginação da lista de Pokémon">
       <ion-button fill="outline" [disabled]="!canGoToPreviousPage" (click)="goToPreviousPage()">
         Anterior
@@ -73,5 +74,6 @@
         Próxima
       </ion-button>
     </nav>
+    }
   </main>
 </ion-content>
