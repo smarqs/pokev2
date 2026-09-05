@@ -41,19 +41,19 @@
         class="pokemon-grid"
         aria-label="Lista de Pokémon"
       >
-        @for (item of pokemon; track item.name) {
+        @for (item of pokemon; track item.id) {
           <ion-card
             class="pokemon-card"
             button
             (click)="openDetails(item)"
           >
             <img
-              [src]="getPokemonImage(item.url)"
+              [src]="getPokemonImage(item.id)"
               [alt]="'Imagem do Pokémon ' + item.name"
               loading="lazy"
             />
             <ion-card-header>
-              <ion-card-subtitle>#{{ getPokemonId(item.url) | number: '3.0-0' }}</ion-card-subtitle>
+              <ion-card-subtitle>#{{ item.id | number: '3.0-0' }}</ion-card-subtitle>
               <div class="card-heading">
                 <ion-card-title>{{ item.name | titlecase }}</ion-card-title>
                 <ion-button

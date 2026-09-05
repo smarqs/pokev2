@@ -24,14 +24,14 @@ export class DetalhesPage implements OnInit {
   private readonly ngZone = inject(NgZone);
 
   ngOnInit(): void {
-    const pokemonName = this.activatedRoute.snapshot.paramMap.get('name');
+  const pokemonId = this.activatedRoute.snapshot.paramMap.get('id');
 
-    if (!pokemonName) {
+    if (!pokemonId) {
       this.errorMessage = 'Pokémon não encontrado.';
       return;
     }
 
-    this.loadPokemon(pokemonName);
+    this.loadPokemon(pokemonId);
   }
 
   loadPokemon(identifier: string): void {
@@ -68,7 +68,7 @@ export class DetalhesPage implements OnInit {
 
   isFavorite(): boolean {
     return this.pokemon
-      ? this.favoritesService.isFavorite(this.pokemon.name)
+      ? this.favoritesService.isFavorite(this.pokemon.id)
       : false;
   }
 
@@ -78,6 +78,7 @@ export class DetalhesPage implements OnInit {
     }
 
     this.favoritesService.toggleFavorite({
+      id: this.pokemon.id,
       name: this.pokemon.name,
       url: `https://pokeapi.co/api/v2/pokemon/${this.pokemon.id}/`,
     });
@@ -105,10 +106,10 @@ export class DetalhesPage implements OnInit {
   }
 
   retry(): void {
-    const pokemonName = this.activatedRoute.snapshot.paramMap.get('name');
+    const pokemonId = this.activatedRoute.snapshot.paramMap.get('id');
 
-    if (pokemonName) {
-      this.loadPokemon(pokemonName);
+    if (pokemonId) {
+      this.loadPokemon(pokemonId);
     }
   }
 }

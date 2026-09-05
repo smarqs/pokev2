@@ -24,13 +24,13 @@ export class FavoritesService {
     }
   }
 
-  isFavorite(pokemonName: string): boolean {
-    return this.getFavorites().some(({ name }) => name === pokemonName);
+  isFavorite(pokemonId: number): boolean {
+    return this.getFavorites().some(({ id }) => id === pokemonId);
   }
 
   toggleFavorite(pokemon: PokemonListItem): boolean {
     const favorites = this.getFavorites();
-    const favoriteIndex = favorites.findIndex(({ name }) => name === pokemon.name);
+    const favoriteIndex = favorites.findIndex(({ id }) => id === pokemon.id);
 
     if (favoriteIndex >= 0) {
       favorites.splice(favoriteIndex, 1);

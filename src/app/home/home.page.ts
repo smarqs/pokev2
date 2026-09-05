@@ -20,7 +20,7 @@ export class HomePage implements OnInit {
   totalCount = 0;
   isLoading = false;
   errorMessage = '';
-  favoriteNames = new Set<string>();
+  favoriteIds = new Set<number>();
 
   private readonly pokeApiService = inject(PokeApiService);
   private readonly favoritesService = inject(FavoritesService);
@@ -30,8 +30,8 @@ export class HomePage implements OnInit {
 
 
   ngOnInit(): void {
-    this.favoriteNames = new Set(
-      this.favoritesService.getFavorites().map(({ name }) => name),
+    this.favoriteIds = new Set(
+      this.favoritesService.getFavorites().map(({ id }) => id),
     );
     this.loadPage();
   }
@@ -58,19 +58,18 @@ export class HomePage implements OnInit {
 
     this.pokeApiService
       .getPokemonPage(page, this.pageSize)
-            .pipe(
+      .pipe(
         finalize(() => {
-          // Garante que o estado final do loading rode na Zona do Angular
           this.ngZone.run(() => {
             this.isLoading = false;
-            this.cdr.detectChanges(); // Força a atualização da interface
+            this.cdr.detectChanges();
           });
         })
       )
 
       .subscribe({
         next: (response) => {
-                    this.ngZone.run(() => {
+          this.ngZone.run(() => {
             this.pokemon = response.results;
             this.currentPage = page;
             this.totalCount = response.count;
@@ -81,7 +80,7 @@ export class HomePage implements OnInit {
         error: (err) => {
           this.ngZone.run(() => {
             console.error('Erro na requisição:', err);
-            this.errorMessage =              'Não foi possível carregar os Pokémon. Tente novamente.';
+            this.errorMessage = 'Não foi possível carregar os Pokémon. Tente novamente.';
             this.cdr.detectChanges();
           });
         },
@@ -105,7 +104,7 @@ export class HomePage implements OnInit {
   }
 
   openDetails(pokemon: PokemonListItem): void {
-    this.router.navigate(['/pokemon', pokemon.name]);
+    this.router.navigate(['/pokemon', pokemon.id]);
   }
 
   onFavoriteClick(event: Event, pokemon: PokemonListItem): void {
@@ -114,33 +113,27 @@ export class HomePage implements OnInit {
   }
 
   isFavorite(pokemon: PokemonListItem): boolean {
-    return this.favoriteNames.has(pokemon.name);
+    return this.favoriteIds.has(pokemon.id);
   }
 
   toggleFavorite(pokemon: PokemonListItem): void {
     const isNowFavorite = this.favoritesService.toggleFavorite(pokemon);
 
     if (isNowFavorite) {
-      this.favoriteNames.add(pokemon.name);
+      this.favoriteIds.add(pokemon.id);
     } else {
-      this.favoriteNames.delete(pokemon.name);
+      this.favoriteIds.delete(pokemon.id);
     }
 
     this.cdr.detectChanges();
   }
 
-  getPokemonId(url: string): number {
-    const segments = url.split('/').filter(Boolean);
-    return Number(segments[segments.length - 1]);
-  }
-
-  getPokemonImage(url: string): string {
-    const pokemonId = this.getPokemonId(url);
-
+  getPokemonImage(pokemonId: number): string {
+    //console.log("ID:", pokemonId);
     return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png`;
   }
 
-  trackByName(_: number, pokemon: PokemonListItem): string {
-    return pokemon.name;
+  trackById(_: number, pokemon: PokemonListItem): number {
+    return pokemon.id;
   }
 }
