@@ -1,6 +1,10 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Pokédex</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" routerLink="/favoritos">Favoritos</ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
@@ -19,80 +23,53 @@
     </section>
 
     @if (isLoading) {
-      <ion-progress-bar
-        type="indeterminate"
-        aria-label="Carregando Pokémon"
-      ></ion-progress-bar>
+    <ion-progress-bar type="indeterminate" aria-label="Carregando Pokémon"></ion-progress-bar>
     }
 
     @if (errorMessage) {
-      <ion-card class="state-card" color="light">
-        <ion-card-content>
-          <ion-text color="danger">
-            <p>{{ errorMessage }}</p>
-          </ion-text>
-          <ion-button fill="outline" (click)="retry()">Tentar novamente</ion-button>
-        </ion-card-content>
-      </ion-card>
+    <ion-card class="state-card" color="light">
+      <ion-card-content>
+        <ion-text color="danger">
+          <p>{{ errorMessage }}</p>
+        </ion-text>
+        <ion-button fill="outline" (click)="retry()">Tentar novamente</ion-button>
+      </ion-card-content>
+    </ion-card>
     }
 
     @if (!errorMessage && pokemon.length > 0) {
-      <section
-        class="pokemon-grid"
-        aria-label="Lista de Pokémon"
-      >
-        @for (item of pokemon; track item.id) {
-          <ion-card
-            class="pokemon-card"
-            button
-            (click)="openDetails(item)"
-          >
-            <img
-              [src]="getPokemonImage(item.id)"
-              [alt]="'Imagem do Pokémon ' + item.name"
-              loading="lazy"
-            />
-            <ion-card-header>
-              <ion-card-subtitle>#{{ item.id | number: '3.0-0' }}</ion-card-subtitle>
-              <div class="card-heading">
-                <ion-card-title>{{ item.name | titlecase }}</ion-card-title>
-                <ion-button
-                  fill="clear"
-                  size="small"
-                  [color]="isFavorite(item) ? 'warning' : 'medium'"
-                  [attr.aria-label]="(isFavorite(item) ? 'Remover ' : 'Adicionar ') + item.name + ' dos favoritos'"
-                  [attr.aria-pressed]="isFavorite(item)"
-                  (click)="onFavoriteClick($event, item)"
-                >
-                  {{ isFavorite(item) ? 'Favorito' : 'Favoritar' }}
-                </ion-button>
-              </div>
-            </ion-card-header>
-          </ion-card>
-        }
-      </section>
+    <section class="pokemon-grid" aria-label="Lista de Pokémon">
+      @for (item of pokemon; track item.id) {
+      <ion-card class="pokemon-card" button (click)="openDetails(item)">
+        <img [src]="getPokemonImage(item.id)" [alt]="'Imagem do Pokémon ' + item.name" loading="lazy" />
+        <ion-card-header>
+          <ion-card-subtitle>#{{ item.id | number: '3.0-0' }}</ion-card-subtitle>
+          <div class="card-heading">
+            <ion-card-title>{{ item.name | titlecase }}</ion-card-title>
+            <ion-button fill="clear" size="small" [color]="isFavorite(item) ? 'warning' : 'medium'"
+              [attr.aria-label]="(isFavorite(item) ? 'Remover ' : 'Adicionar ') + item.name + ' dos favoritos'"
+              [attr.aria-pressed]="isFavorite(item)" (click)="onFavoriteClick($event, item)">
+              {{ isFavorite(item) ? 'Favorito' : 'Favoritar' }}
+            </ion-button>
+          </div>
+        </ion-card-header>
+      </ion-card>
+      }
+    </section>
     }
 
     @if (!isLoading && !errorMessage && pokemon.length === 0) {
-      <ion-card class="state-card">
-        <ion-card-content>Nenhum Pokémon encontrado.</ion-card-content>
-      </ion-card>
+    <ion-card class="state-card">
+      <ion-card-content>Nenhum Pokémon encontrado.</ion-card-content>
+    </ion-card>
     }
 
     <nav class="pagination" aria-label="Paginação da lista de Pokémon">
-      <ion-button
-        fill="outline"
-        [disabled]="!canGoToPreviousPage"
-        (click)="goToPreviousPage()"
-      >
+      <ion-button fill="outline" [disabled]="!canGoToPreviousPage" (click)="goToPreviousPage()">
         Anterior
       </ion-button>
       <span aria-live="polite">{{ currentPage }} / {{ totalPages }}</span>
-      <ion-button
-        fill="solid"
-        [disabled]="!canGoToNextPage"
-        (click)="goToNextPage()"
-      >
+      <ion-button fill="solid" [disabled]="!canGoToNextPage" (click)="goToNextPage()">
         Próxima
       </ion-button>
     </nav>

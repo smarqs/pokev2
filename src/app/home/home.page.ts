@@ -12,7 +12,7 @@ import { PokeApiService } from '../core/services/pokeApi.service';
   styleUrls: ['home.page.scss'],
   standalone: false,
 })
-export class HomePage implements OnInit {
+export class HomePage {
   readonly pageSize = 20;
 
   pokemon: PokemonListItem[] = [];
@@ -29,7 +29,7 @@ export class HomePage implements OnInit {
   private readonly ngZone = inject(NgZone);
 
 
-  ngOnInit(): void {
+  ionViewWillEnter(): void {
     this.favoriteIds = new Set(
       this.favoritesService.getFavorites().map(({ id }) => id),
     );

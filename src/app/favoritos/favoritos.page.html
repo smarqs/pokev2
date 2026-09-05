@@ -1,0 +1,61 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="Voltar"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Favoritos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <main class="favorites-content">
+    <section class="page-heading" aria-labelledby="page-title">
+      <p class="eyebrow">Sua coleção</p>
+      <h1 id="page-title">Pokémon favoritos</h1>
+      <p class="subtitle">
+        {{ favorites.length }} {{ favorites.length === 1 ? 'Pokémon salvo' : 'Pokémon salvos' }}
+      </p>
+    </section>
+
+    @if (favorites.length > 0) {
+      <section class="pokemon-grid" aria-label="Lista de Pokémon favoritos">
+        @for (item of favorites; track item.id) {
+          <ion-card
+            class="pokemon-card"
+            button
+            (click)="openDetails(item)"
+          >
+            <img
+              [src]="getPokemonImage(item.id)"
+              [alt]="'Imagem do Pokémon ' + item.name"
+              loading="lazy"
+            />
+            <ion-card-header>
+              <ion-card-subtitle>#{{ item.id | number: '3.0-0' }}</ion-card-subtitle>
+              <div class="card-heading">
+                <ion-card-title>{{ item.name | titlecase }}</ion-card-title>
+                <ion-button
+                  fill="clear"
+                  size="small"
+                  color="danger"
+                  [attr.aria-label]="'Remover ' + item.name + ' dos favoritos'"
+                  (click)="removeFavorite($event, item)"
+                >
+                  Remover
+                </ion-button>
+              </div>
+            </ion-card-header>
+          </ion-card>
+        }
+      </section>
+    } @else {
+      <ion-card class="empty-card">
+        <ion-card-content>
+          <h2>Nenhum favorito ainda</h2>
+          <p>Marque um Pokémon na lista principal para encontrá-lo aqui.</p>
+          <ion-button routerLink="/home">Explorar Pokémon</ion-button>
+        </ion-card-content>
+      </ion-card>
+    }
+  </main>
+</ion-content>
