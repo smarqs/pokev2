@@ -17,8 +17,9 @@
     }
 
     @if (errorMessage) {
-    <ion-card class="state-card" color="light">
+    <ion-card class="state-card state-card--error">
       <ion-card-content>
+        <ion-icon name="cloud-offline-outline" aria-hidden="true"></ion-icon>
         <ion-text color="danger">
           <p>{{ errorMessage }}</p>
         </ion-text>
@@ -30,6 +31,7 @@
     @if (!isLoading && !errorMessage && !pokemon) {
     <ion-card class="state-card">
       <ion-card-content>
+        <ion-icon name="help-circle-outline" aria-hidden="true"></ion-icon>
         <p>Não há detalhes disponíveis para este Pokémon.</p>
         <ion-button routerLink="/home">Voltar para a lista</ion-button>
       </ion-card-content>
@@ -42,10 +44,11 @@
         <img [src]="getPokemonImage()" [alt]="'Imagem do Pokémon ' + pokemon.name" />
       </div>
       <div class="pokemon-heading">
-        <p class="pokemon-number">#{{ pokemon.id | number: '3.0-0' }}</p>
+        <p class="pokemon-number">Nº {{ pokemon.id | number: '3.0-0' }}</p>
         <h1 id="pokemon-name">{{ pokemon.name | titlecase }}</h1>
         <ion-button fill="outline" [color]="isFavorite() ? 'warning' : 'primary'" [attr.aria-pressed]="isFavorite()"
           (click)="toggleFavorite()">
+          <ion-icon slot="start" [name]="isFavorite() ? 'star' : 'star-outline'" aria-hidden="true"></ion-icon>
           {{ isFavorite() ? 'Remover dos favoritos' : 'Adicionar aos favoritos' }}
         </ion-button>
       </div>

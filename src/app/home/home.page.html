@@ -17,9 +17,14 @@
 
   <main class="page-content">
     <section class="page-heading" aria-labelledby="page-title">
-      <p class="eyebrow">PokeAPI</p>
+      <svg class="heading-glyph" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="6" />
+        <line x1="8" y1="60" x2="112" y2="60" stroke="currentColor" stroke-width="6" />
+        <circle cx="60" cy="60" r="14" fill="var(--pd-bg)" stroke="currentColor" stroke-width="6" />
+      </svg>
+      <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span>PokeAPI</p>
       <h1 id="page-title">Explore os Pokémon</h1>
-      <p class="subtitle">Página {{ currentPage }} de {{ totalPages }}</p>
+      <p class="subtitle">Página <span class="counter">{{ currentPage }}</span> de <span class="counter">{{ totalPages }}</span></p>
     </section>
 
     @if (isLoading) {
@@ -27,8 +32,9 @@
     }
 
     @if (errorMessage) {
-    <ion-card class="state-card" color="light">
+    <ion-card class="state-card state-card--error">
       <ion-card-content>
+        <ion-icon name="cloud-offline-outline" aria-hidden="true"></ion-icon>
         <ion-text color="danger">
           <p>{{ errorMessage }}</p>
         </ion-text>
@@ -41,15 +47,17 @@
     <section class="pokemon-grid" aria-label="Lista de Pokémon">
       @for (item of pokemon; track item.id) {
       <ion-card class="pokemon-card" button (click)="openDetails(item)">
-        <img [src]="getPokemonImage(item.id)" [alt]="'Imagem do Pokémon ' + item.name" loading="lazy" />
+        <div class="sprite-frame">
+          <img [src]="getPokemonImage(item.id)" [alt]="'Imagem do Pokémon ' + item.name" loading="lazy" />
+        </div>
         <ion-card-header>
-          <ion-card-subtitle>#{{ item.id | number: '3.0-0' }}</ion-card-subtitle>
+          <ion-card-subtitle>Nº {{ item.id | number: '3.0-0' }}</ion-card-subtitle>
           <div class="card-heading">
             <ion-card-title>{{ item.name | titlecase }}</ion-card-title>
-            <ion-button fill="clear" size="small" [color]="isFavorite(item) ? 'warning' : 'medium'"
+            <ion-button fill="clear" size="small" class="favorite-toggle" [color]="isFavorite(item) ? 'warning' : 'medium'"
               [attr.aria-label]="(isFavorite(item) ? 'Remover ' : 'Adicionar ') + item.name + ' dos favoritos'"
               [attr.aria-pressed]="isFavorite(item)" (click)="onFavoriteClick($event, item)">
-              {{ isFavorite(item) ? 'Favorito' : 'Favoritar' }}
+              <ion-icon slot="icon-only" [name]="isFavorite(item) ? 'star' : 'star-outline'"></ion-icon>
             </ion-button>
           </div>
         </ion-card-header>
@@ -59,19 +67,38 @@
     }
 
     @if (showEmptyState) {
-    <ion-card class="state-card">
-      <ion-card-content>Nenhum Pokémon encontrado.</ion-card-content>
+    <ion-card class="state-card state-card--empty">
+      <ion-card-content>
+        <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+        <p>Nenhum Pokémon encontrado.</p>
+      </ion-card-content>
     </ion-card>
     }
 
     @if (showPagination) {
     <nav class="pagination" aria-label="Paginação da lista de Pokémon">
+      <div class="page-jump">
+        <label for="page-input">Ir para</label>
+        <ion-input
+        id="page-input"
+        type="number"
+        inputmode="numeric"
+        min="1"
+        [max]="totalPages"
+        [(ngModel)]="pageInput"
+        (keyup.enter)="goToPage()"
+        aria-label="Número da página"
+        ></ion-input>
+        <!--<ion-button fill="outline" size="small" (click)="goToPage()">Ir</ion-button>-->
+      </div>
       <ion-button fill="outline" [disabled]="!canGoToPreviousPage" (click)="goToPreviousPage()">
+        <ion-icon slot="start" name="chevron-back-outline" aria-hidden="true"></ion-icon>
         Anterior
       </ion-button>
-      <span aria-live="polite">{{ currentPage }} / {{ totalPages }}</span>
+      <span class="page-readout" aria-live="polite">{{ currentPage }}<span class="page-readout__divider">/</span>{{ totalPages }}</span>
       <ion-button fill="solid" [disabled]="!canGoToNextPage" (click)="goToNextPage()">
         Próxima
+        <ion-icon slot="end" name="chevron-forward-outline" aria-hidden="true"></ion-icon>
       </ion-button>
     </nav>
     }

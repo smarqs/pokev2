@@ -10,10 +10,15 @@
 <ion-content [fullscreen]="true">
   <main class="favorites-content">
     <section class="page-heading" aria-labelledby="page-title">
-      <p class="eyebrow">Sua coleção</p>
+      <svg class="heading-glyph" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="6" />
+        <line x1="8" y1="60" x2="112" y2="60" stroke="currentColor" stroke-width="6" />
+        <circle cx="60" cy="60" r="14" fill="var(--pd-bg)" stroke="currentColor" stroke-width="6" />
+      </svg>
+      <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span>Sua coleção</p>
       <h1 id="page-title">Pokémon favoritos</h1>
       <p class="subtitle">
-        {{ favorites.length }} {{ favorites.length === 1 ? 'Pokémon salvo' : 'Pokémon salvos' }}
+        <span class="counter">{{ favorites.length }}</span> {{ favorites.length === 1 ? 'Pokémon salvo' : 'Pokémon salvos' }}
       </p>
     </section>
 
@@ -25,23 +30,27 @@
             button
             (click)="openDetails(item)"
           >
-            <img
-              [src]="getPokemonImage(item.id)"
-              [alt]="'Imagem do Pokémon ' + item.name"
-              loading="lazy"
-            />
+            <div class="sprite-frame">
+              <img
+                [src]="getPokemonImage(item.id)"
+                [alt]="'Imagem do Pokémon ' + item.name"
+                loading="lazy"
+              />
+            </div>
             <ion-card-header>
-              <ion-card-subtitle>#{{ item.id | number: '3.0-0' }}</ion-card-subtitle>
+              <ion-card-subtitle>Nº {{ item.id | number: '3.0-0' }}</ion-card-subtitle>
               <div class="card-heading">
                 <ion-card-title>{{ item.name | titlecase }}</ion-card-title>
                 <ion-button
                   fill="clear"
                   size="small"
-                  color="danger"
+                  class="favorite-toggle"
+                  color="warning"
                   [attr.aria-label]="'Remover ' + item.name + ' dos favoritos'"
+                  [attr.aria-pressed]="true"
                   (click)="removeFavorite($event, item)"
                 >
-                  Remover
+                  <ion-icon slot="icon-only" name="star"></ion-icon>
                 </ion-button>
               </div>
             </ion-card-header>
@@ -49,8 +58,9 @@
         }
       </section>
     } @else {
-      <ion-card class="empty-card">
+      <ion-card class="state-card state-card--empty">
         <ion-card-content>
+          <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
           <h2>Nenhum favorito ainda</h2>
           <p>Marque um Pokémon na lista principal para encontrá-lo aqui.</p>
           <ion-button routerLink="/home">Explorar Pokémon</ion-button>

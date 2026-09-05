@@ -1,5 +1,7 @@
-import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 import { PokemonListItem } from '../core/models/pokemon.model';
 import { FavoritesService } from '../core/services/favorites.service';
@@ -12,17 +14,33 @@ import { getPokemonImage as getPokemonImageFromUrl } from '../core/utils/pokemon
   styleUrls: ['./favoritos.page.scss'],
   standalone: false,
 })
-export class FavoritosPage {
+export class FavoritosPage implements OnInit {
   favorites: PokemonListItem[] = [];
 
   private readonly favoritesService = inject(FavoritesService);
   private readonly router = inject(Router);
 
+    private readonly destroyRef = inject(DestroyRef);
+
+  constructor() {
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => this.loadFavorites());
+  }
+
+
   readonly getPokemonImage = getPokemonImageFromUrl;
 
   ngOnInit(): void {
+        this.loadFavorites();
+  }
+
+  private loadFavorites(): void {
     this.favorites = this.favoritesService.getFavorites();
-    console.log("id: ", this.favorites);
+
   }
 
   openDetails(pokemon: PokemonListItem): void {

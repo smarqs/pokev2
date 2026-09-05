@@ -20,6 +20,8 @@ export class HomePage {
 
   pokemon: PokemonListItem[] = [];
   currentPage = 1;
+    pageInput = 1;
+
   totalCount = 0;
   isLoading = false;
   errorMessage = '';
@@ -76,6 +78,8 @@ export class HomePage {
           this.ngZone.run(() => {
             this.pokemon = response.results;
             this.currentPage = page;
+                        this.pageInput = page;
+
             this.totalCount = response.count;
             this.cdr.detectChanges();
           });
@@ -101,6 +105,17 @@ export class HomePage {
     if (this.canGoToNextPage) {
       this.loadPage(this.currentPage + 1);
     }
+  }
+
+    goToPage(): void {
+    const targetPage = Math.trunc(Number(this.pageInput));
+
+    if (targetPage >= 1 && targetPage <= this.totalPages) {
+      this.loadPage(targetPage);
+      return;
+    }
+
+    this.pageInput = this.currentPage;
   }
 
   retry(): void {

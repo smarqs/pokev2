@@ -1,39 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:host {
+  --pd-bg: #14161c;
+  --pd-panel: #1e2330;
+  --pd-panel-elevated: #262c3d;
+  --pd-panel-border: #333c52;
+  --pd-red: #ff4438;
+  --pd-red-strong: #c4291d;
+  --pd-gold: #ffc93c;
+  --pd-text: #f5f1e8;
+  --pd-text-dim: #b7bfcf;
+  --pd-radius-lg: 20px;
+  --pd-radius-md: 14px;
+  --pd-radius-sm: 8px;
+
+  // Scope Ionic's "primary" semantic color to the Pokédex red within this page,
+  // so outline buttons and chips read as on-brand instead of the default blue.
+  --ion-color-primary: var(--pd-red);
+  --ion-color-primary-rgb: 255, 68, 56;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: var(--pd-red-strong);
+  --ion-color-primary-tint: #ff6659;
+
+  ion-content {
+    --background: var(--pd-bg);
+    --color: var(--pd-text);
+  }
+}
+
+ion-header ion-toolbar {
+  --background: var(--pd-panel);
+  --color: var(--pd-text);
+  --border-color: var(--pd-panel-border);
+}
+
+ion-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+}
+
+ion-back-button {
+  --color: var(--pd-text);
+}
+
 .details-content {
   margin: 0 auto;
   max-width: 960px;
-  padding: 24px 16px 32px;
+  padding: 28px 16px 40px;
 }
+
+// ---- Loading & state cards -----------------------------------
 
 .loading-state {
   align-items: center;
-  color: var(--ion-color-medium-shade);
+  color: var(--pd-text-dim);
   display: flex;
   flex-direction: column;
   gap: 12px;
   justify-content: center;
   min-height: 240px;
-}
 
-.loading-state p {
-  margin: 0;
+  ion-spinner {
+    color: var(--pd-red);
+    transform: scale(1.4);
+  }
+
+  p {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+  }
 }
 
 .state-card {
+  --background: var(--pd-panel);
   margin: 0;
-  text-align: center;
+  border: 1px solid var(--pd-panel-border);
+  border-radius: var(--pd-radius-md);
+
+  ion-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 32px 20px;
+    text-align: center;
+  }
+
+  ion-icon {
+    font-size: 2rem;
+    color: var(--pd-text-dim);
+  }
+
+  p {
+    color: var(--pd-text-dim);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+  }
 }
+
+.state-card--error ion-icon {
+  color: var(--pd-red);
+}
+
+// ---- Hero -----------------------------------------------------
 
 .pokemon-hero {
   align-items: center;
   display: grid;
   gap: 24px;
   grid-template-columns: minmax(0, 1fr);
-  margin-bottom: 24px;
+  margin-bottom: 28px;
+  animation: rise-in 480ms ease-out both;
 }
 
 .pokemon-image-wrapper {
-  background: var(--ion-color-light);
-  border-radius: 24px;
+  background: radial-gradient(circle at 50% 45%, var(--pd-panel-elevated) 0%, var(--pd-panel) 68%);
+  border: 1px solid var(--pd-panel-border);
+  border-radius: var(--pd-radius-lg);
   display: grid;
   min-height: 260px;
   place-items: center;
@@ -45,6 +129,7 @@
   max-width: 100%;
   object-fit: contain;
   padding: 24px;
+  filter: drop-shadow(0 10px 18px rgb(0 0 0 / 40%));
 }
 
 .pokemon-heading {
@@ -52,16 +137,22 @@
 }
 
 .pokemon-number {
-  color: var(--ion-color-medium);
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-family: 'Space Grotesk', sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--pd-red);
+  font-weight: 600;
   margin: 0 0 4px;
 }
 
 .pokemon-heading h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
   font-size: clamp(2rem, 8vw, 3.5rem);
+  color: var(--pd-text);
   margin: 0 0 20px;
 }
+
+// ---- Info grid & detail cards ---------------------------------
 
 .info-grid {
   display: grid;
@@ -72,20 +163,40 @@
 
 .info-card,
 .detail-card {
+  --background: var(--pd-panel);
   margin: 0 0 12px;
+  border: 1px solid var(--pd-panel-border);
+  border-radius: var(--pd-radius-md);
 }
 
 .info-card ion-card-header {
   padding: 16px;
 }
 
+.info-card ion-card-subtitle {
+  color: var(--pd-text-dim);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+}
+
 .info-card ion-card-title {
-  font-size: 1.15rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--pd-text);
   margin-top: 4px;
 }
 
 .detail-card ion-card-header {
   padding-bottom: 8px;
+}
+
+.detail-card ion-card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--pd-text);
 }
 
 .chip-list {
@@ -96,6 +207,10 @@
 
 .chip-list ion-chip {
   margin: 0;
+  --background: color-mix(in srgb, var(--pd-red) 18%, var(--pd-panel));
+  --color: var(--pd-text);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
 }
 
 .ability-list,
@@ -109,11 +224,13 @@
   align-items: center;
   display: flex;
   justify-content: space-between;
+  font-family: 'Inter', sans-serif;
 }
 
 .ability-item {
-  border-bottom: 1px solid var(--ion-color-light-shade);
+  border-bottom: 1px solid var(--pd-panel-border);
   padding-bottom: 10px;
+  color: var(--pd-text);
 }
 
 .ability-item:last-child {
@@ -127,13 +244,49 @@
 }
 
 .stat-label {
-  color: var(--ion-color-medium-shade);
+  color: var(--pd-text-dim);
   font-size: 0.9rem;
 }
 
 .stat-label strong {
-  color: var(--ion-text-color);
+  font-family: 'Space Grotesk', sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--pd-text);
 }
+
+.stats-list ion-progress-bar {
+  --background: var(--pd-panel-elevated);
+  --progress-background: var(--pd-red);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+// ---- Motion & accessibility --------------------------------
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pokemon-hero {
+    animation: none !important;
+  }
+}
+
+*:focus-visible {
+  outline: 2px solid var(--pd-red);
+  outline-offset: 2px;
+}
+
+// ---- Responsive -------------------------------------------------
 
 @media (min-width: 640px) {
   .details-content {

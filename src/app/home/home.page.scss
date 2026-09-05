@@ -1,68 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:host {
+  --pd-bg: #14161c;
+  --pd-panel: #1e2330;
+  --pd-panel-elevated: #262c3d;
+  --pd-panel-border: #333c52;
+  --pd-red: #ff4438;
+  --pd-red-strong: #c4291d;
+  --pd-gold: #ffc93c;
+  --pd-text: #f5f1e8;
+  --pd-text-dim: #b7bfcf;
+  --pd-radius-lg: 20px;
+  --pd-radius-md: 14px;
+  --pd-radius-sm: 8px;
+
+  ion-content {
+    --background: var(--pd-bg);
+    --color: var(--pd-text);
+  }
+}
+
+ion-header ion-toolbar {
+  --background: var(--pd-panel);
+  --color: var(--pd-text);
+  --border-color: var(--pd-panel-border);
+}
+
+ion-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+}
+
 .page-content {
   margin: 0 auto;
   max-width: 1120px;
-  padding: 24px 16px 32px;
+  padding: 28px 16px 40px;
 }
 
+// ---- Hero -------------------------------------------------
+
 .page-heading {
-  margin-bottom: 24px;
+  position: relative;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--pd-panel-border);
+  animation: rise-in 480ms ease-out both;
+}
+
+.heading-glyph {
+  position: absolute;
+  top: -6px;
+  right: 0;
+  width: 84px;
+  height: 84px;
+  color: var(--pd-panel-border);
+  opacity: 0.7;
 }
 
 .eyebrow {
-  color: var(--ion-color-primary);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  margin: 0 0 8px;
-  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--pd-text-dim);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin: 0 0 10px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pd-red);
+  box-shadow: 0 0 0 3px rgb(255 68 56 / 18%);
+  animation: pulse 2.2s ease-in-out infinite;
 }
 
 h1 {
-  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.9rem, 5vw, 2.75rem);
+  line-height: 1.1;
   margin: 0;
+  max-width: 14ch;
+  color: var(--pd-text);
 }
 
 .subtitle {
-  color: var(--ion-color-medium);
-  margin: 8px 0 0;
+  color: var(--pd-text-dim);
+  font-family: 'Inter', sans-serif;
+  margin: 10px 0 0;
 }
 
-ion-progress-bar {
-  margin-bottom: 16px;
+.counter {
+  font-family: 'Space Grotesk', sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--pd-text);
+  font-weight: 600;
 }
+
+// ---- Progress / state cards --------------------------------
+
+ion-progress-bar {
+  --background: var(--pd-panel);
+  --progress-background: var(--pd-red);
+  margin-bottom: 16px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.state-card {
+  --background: var(--pd-panel);
+  margin: 0;
+  border: 1px solid var(--pd-panel-border);
+  border-radius: var(--pd-radius-md);
+
+  ion-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 32px 20px;
+    text-align: center;
+  }
+
+  ion-icon {
+    font-size: 2rem;
+    color: var(--pd-text-dim);
+  }
+
+  p {
+    color: var(--pd-text-dim);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+  }
+}
+
+.state-card--error ion-icon {
+  color: var(--pd-red);
+}
+
+// ---- Pokémon grid -------------------------------------------
 
 .pokemon-grid {
   display: grid;
-  gap: 12px;
+  gap: 14px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .pokemon-card {
+  --background: var(--pd-panel);
   margin: 0;
   overflow: hidden;
-  transition: transform 160ms ease, box-shadow 160ms ease;
+  border: 1px solid var(--pd-panel-border);
+  border-radius: var(--pd-radius-md);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
-.pokemon-card:hover {
-  box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
-  transform: translateY(-2px);
+.pokemon-card:hover,
+.pokemon-card:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--pd-red);
+  box-shadow: 0 10px 28px rgb(255 68 56 / 16%);
 }
 
-.pokemon-card img {
+.sprite-frame {
   aspect-ratio: 1;
-  background: var(--ion-color-light);
-  display: block;
-  object-fit: contain;
-  padding: 12px;
-  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 50% 45%, var(--pd-panel-elevated) 0%, var(--pd-panel) 68%);
+  padding: 14px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 10px rgb(0 0 0 / 35%));
+  }
 }
 
 .pokemon-card ion-card-header {
-  padding: 12px;
+  padding: 12px 14px 14px;
 }
 
 .pokemon-card ion-card-subtitle {
   margin-bottom: 4px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--pd-red);
+  font-size: 0.72rem;
+  font-weight: 600;
 }
 
 .card-heading {
@@ -74,40 +204,149 @@ ion-progress-bar {
 
 .pokemon-card ion-card-title {
   flex: 1;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 1rem;
+  font-weight: 600;
+  color: var(--pd-text);
 }
 
-.card-heading ion-button {
-  --padding-end: 0;
-  --padding-start: 0;
+.favorite-toggle {
+  --padding-end: 4px;
+  --padding-start: 4px;
   flex-shrink: 0;
-  font-size: 0.68rem;
   margin: 0;
+  font-size: 1.1rem;
+  transition: filter 160ms ease;
 }
 
-.state-card {
-  margin: 0;
-  text-align: center;
+.favorite-toggle[aria-pressed='true'] {
+  filter: drop-shadow(0 0 6px rgb(255 201 60 / 65%));
 }
+
+// ---- Pagination ------------------------------------------
 
 .pagination {
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   justify-content: center;
-  margin-top: 28px;
+  margin-top: 32px;
 }
 
-.pagination span {
-  color: var(--ion-color-medium-shade);
-  font-size: 0.9rem;
-  min-width: 56px;
+.pagination ion-button {
+  --border-color: var(--pd-panel-border);
+  --border-radius: var(--pd-radius-sm);
+  --color: var(--pd-text);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+}
+
+.pagination ion-button[fill='solid'] {
+  --background: var(--pd-red-strong);
+  --background-hover: var(--pd-red);
+  --color: var(--pd-text);
+}
+
+.page-readout {
+  font-family: 'Space Grotesk', sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--pd-text);
+  background: var(--pd-panel);
+  border: 1px solid var(--pd-panel-border);
+  border-radius: var(--pd-radius-sm);
+  padding: 8px 14px;
+  min-width: 64px;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.page-readout__divider {
+  color: var(--pd-text-dim);
+  margin: 0 4px;
+}
+
+.page-jump {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.page-jump label {
+  color: var(--pd-text-dim);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+}
+
+.page-jump ion-input {
+  --background: var(--pd-panel);
+  --color: var(--pd-text);
+  --padding-bottom: 4px;
+  --padding-end: 6px;
+  --padding-start: 6px;
+  --padding-top: 4px;
+  --placeholder-color: var(--pd-text-dim);
+  border: 1px solid var(--pd-panel-border);
+  border-radius: var(--pd-radius-sm);
+  max-width: 64px;
   text-align: center;
 }
+
+.page-jump ion-input.has-focus {
+  border-color: var(--pd-red);
+}
+
+// ---- Motion & accessibility --------------------------------
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .page-heading,
+  .status-dot,
+  .pokemon-card {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+*:focus-visible {
+  outline: 2px solid var(--pd-red);
+  outline-offset: 2px;
+}
+
+// ---- Responsive ---------------------------------------------
 
 @media (max-width: 360px) {
   .page-content {
     padding-inline: 12px;
+  }
+
+  .heading-glyph {
+    width: 64px;
+    height: 64px;
   }
 
   .pokemon-card ion-card-header {
@@ -120,7 +359,7 @@ ion-progress-bar {
     gap: 8px;
   }
 
-  .card-heading ion-button {
+  .favorite-toggle {
     align-self: flex-start;
   }
 }
@@ -150,7 +389,7 @@ ion-progress-bar {
     margin-bottom: 16px;
   }
 
-  .pokemon-card img {
+  .sprite-frame {
     padding: 8px;
   }
 
@@ -160,5 +399,11 @@ ion-progress-bar {
 
   .pagination {
     margin-top: 20px;
+  }
+
+  .page-jump {
+    order: 3;
+    width: 100%;
+    justify-content: center;
   }
 }
